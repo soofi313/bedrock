@@ -2,7 +2,7 @@
  # License, v. 2.0. If a copy of the MPL was not distributed with this
  # file, You can obtain one at http://mozilla.org/MPL/2.0/. -#}
 
-{% from "macros-protocol.html" import billboard, card, call_out_compact with context %}
+{% from "macros-protocol.html" import billboard, card, call_out_compact, content_card with context %}
 
 {% extends "base-protocol.html" %}
 
@@ -120,19 +120,7 @@
     <div class="mzp-l-content">
       <div class="mzp-l-card-hero">
         <!-- 1 -->
-        {{ card(
-          class='mzp-c-card-large',
-          tag_label=_('Video'),
-          media_icon='mzp-has-video',
-          title=_('We keep your data safe, never sold.'),
-          ga_title='We keep your data safe, never sold.',
-          desc=_('You have the right to your own life — and your own data. Everything we make and do fights for you.'),
-          image_url='home/2018/cards/dec/ffyr.png',
-          include_highres_image=True,
-          aspect_ratio='mzp-has-aspect-16-9',
-          link_url=url('firefox.fights-for-you'),
-          youtube_id='rZAQ6vgt8nE'
-        )}}
+        {{ content_card('home', 'card_1', LANG, 'large') }}
         <!-- 2 -->
       {{ card(
         tag_label=_('Internet Health'),

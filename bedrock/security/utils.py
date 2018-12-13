@@ -4,12 +4,12 @@
 
 import codecs
 import re
-from collections import OrderedDict
 from datetime import date
 
-import yaml
 from django.template.loader import render_to_string
 from markdown import markdown
+
+from bedrock.externalfiles.utils import parse_md_file as _md_file, yaml_ordered_safe_load
 
 
 FILENAME_RE = re.compile('mfsa(\d{4}-\d{2,3})\.(md|yml)$')
@@ -23,45 +23,15 @@ def mfsa_id_from_filename(filename):
     return None
 
 
-def parse_md_front_matter(lines):
-    """Return the YAML and MD sections.
-
-    :param: lines iterator
-    :return: str YAML, str Markdown
-    """
-    # fm_count: 0: init, 1: in YAML, 2: in Markdown
-    fm_count = 0
-    yaml_lines = []
-    md_lines = []
-    for line in lines:
-        # first line we care about is FM start
-        if fm_count < 2 and line.strip() == '---':
-            fm_count += 1
-            continue
-
-        if fm_count == 1:
-            yaml_lines.append(line)
-
-        if fm_count == 2:
-            md_lines.append(line)
-
-    if fm_count < 2:
-        raise ValueError('Front Matter not found.')
-
-    return ''.join(yaml_lines), ''.join(md_lines)
-
-
 def parse_md_file(file_name):
     """Return the YAML and MD sections for file_name."""
-    with codecs.open(file_name, encoding='utf8') as fh:
-        yamltext, mdtext = parse_md_front_matter(fh)
-
-    data = yaml_ordered_safe_load(yamltext)
+    data, html = _md_file(file_name)
     if 'mfsa_id' not in data:
         mfsa_id = mfsa_id_from_filename(file_name)
         if mfsa_id:
             data['mfsa_id'] = mfsa_id
-    return data, markdown(mdtext)
+
+    return data, html
 
 
 def parse_yml_file_base(file_name):
@@ -116,24 +86,6 @@ def parse_bug_url(url):
         url = 'https://bugzilla.mozilla.org/buglist.cgi?bug_id=%s' % url
 
     return url
-
-
-def yaml_ordered_safe_load(stream, object_pairs_hook=OrderedDict):
-    """
-    Load YAML mappings as OrderedDicts
-
-    from http://stackoverflow.com/a/21912744
-    """
-    class OrderedLoader(yaml.SafeLoader):
-        pass
-
-    def construct_mapping(loader, node):
-        loader.flatten_mapping(node)
-        return object_pairs_hook(loader.construct_pairs(node))
-
-    OrderedLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-                                  construct_mapping)
-    return yaml.load(stream, OrderedLoader)
 
 
 def check_hof_data(data):
