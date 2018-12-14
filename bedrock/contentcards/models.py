@@ -21,9 +21,19 @@ def get_data_from_file_path(file_path):
 
 
 class ContentCardManager(models.Manager):
-    def get_card(self, page_name, name, locale):
-        page_id = '{}-{}-{}'.format(page_name, name, locale)
-        return self.get(name=page_id)
+    def get_card(self, page_name, name, locale='en-US'):
+        card_id = '{}-{}-{}'.format(page_name, name, locale)
+        return self.get(name=card_id)
+
+    def get_card_data(self, page_name, name, locale):
+        card = self.get_card(page_name, name, locale)
+        if locale == 'en-US':
+            return card.card_data
+        else:
+            en_card = self.get_card(page_name, name)
+            data = en_card.card_data
+            data.update(card.card_data)
+            return data
 
     def refresh(self):
         card_objs = []
@@ -68,23 +78,20 @@ class ContentCard(models.Model):
     @property
     def card_data(self):
         """Return a dict appropriate for calling the card() macro"""
-        data = {
-            'title': self.data['title'],
-            # TODO this may mean we need the en-US title for all translations
-            'ga_title': self.data['title'],
-            # TODO make this a url and upload the image
-            'image_url': self.data['image'],
-            'link_url': self.data['link_url'],
-            'desc': self.data['desc'],
-            'tag_label': self.data['tag_label'],
-        }
-        if 'media_icon' in self.data:
-            data['media_icon'] = 'mzp-has-' + self.data['media_icon']
+        data = {}
+        data.update(self.data)
+        # TODO make this a url and upload the image
+        if 'image' in data:
+            data['image_url'] = data['image']
+            del data['image']
 
-        if 'aspect_ratio' in self.data:
-            data['aspect_ratio'] = 'mzp-has-aspect-' + self.data['aspect_ratio']
+        if 'ga_title' not in data:
+            data['ga_title'] = data['title']
 
-        if self.data.get('highres_image', False):
-            data['include_highres_image'] = True
+        if 'media_icon' in data:
+            data['media_icon'] = 'mzp-has-%s' % data['media_icon']
+
+        if 'aspect_ratio' in data:
+            data['aspect_ratio'] = 'mzp-has-aspect-%s' % data['aspect_ratio']
 
         return data
