@@ -1285,7 +1285,7 @@ SEND_TO_DEVICE_MESSAGE_SETS = {
 
 CONTENT_CARDS_PATH = config('CONTENT_CARDS_PATH', default=path('content_cards'))
 CONTENT_CARDS_REPO = config('CONTENT_CARDS_REPO', default='https://github.com/mozmeao/www-admin.git')
-CONTENT_CARDS_BRANCH = config('CONTENT_CARDS_BRANCH', default='master')
+CONTENT_CARDS_BRANCH = config('CONTENT_CARDS_BRANCH', default='master-processed')
 
 RELEASE_NOTES_PATH = config('RELEASE_NOTES_PATH', default=path('release_notes'))
 RELEASE_NOTES_REPO = config('RELEASE_NOTES_REPO', default='https://github.com/mozilla/release-notes.git')

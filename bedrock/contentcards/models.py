@@ -80,9 +80,8 @@ class ContentCard(models.Model):
         """Return a dict appropriate for calling the card() macro"""
         data = {}
         data.update(self.data)
-        # TODO make this a url and upload the image
         if 'image' in data:
-            data['image_url'] = data['image']
+            data['image_url'] = '%scontentcards/img/%s' % (settings.STATIC_URL, data['image'])
             del data['image']
 
         if 'ga_title' not in data:
