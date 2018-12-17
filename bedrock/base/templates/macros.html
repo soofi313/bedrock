@@ -241,7 +241,7 @@
 
 {# The send_yourself macro refactors and replaces the send_to_device macro above.
    This version better supports multiple products and avoids duplicate IDs so more than one widget can be embedded in a page. #}
-{% macro send_yourself(include_title=True, title_text='', spinner_color='', message_set='default', id='send-yourself', product='firefox') %}
+{% macro send_yourself(include_title=True, title_text='', spinner_color='', message_set='default', id='send-yourself', product='firefox', email_title='', email_subtext='') %}
   <section id="{{ id }}" class="mzp-c-sendyourself {% if include_title %}mzp-has-title{% endif %}" data-countries="{{ send_to_device_sms_countries(message_set) }}"{% if spinner_color %} data-spinner-color="{{ spinner_color }}"{% endif %}>
     <div class="mzp-c-sendyourself-container">
       {% if include_title %}
@@ -266,7 +266,13 @@
         </div>
         <div class="mzp-c-sendyourself-formfields">
           <p class="mzp-c-sendyourself-field">
-            <label for="{{ id }}-input" class="mzp-js-input-label" data-alt="{{ _('Enter your email or phone number') }}">{{ _('Enter your email') }}</label>
+            <label for="{{ id }}-input" class="mzp-js-input-label" data-alt="{{ _('Enter your email or phone number') }}">
+              {% if email_title %}
+                {{ email_title }}
+              {% else %}
+                {{ _('Enter your email') }}
+              {% endif %}
+            </label>
             <input id="{{ id }}-input" class="mzp-c-sendyourself-input" name="phone-or-email" type="text" required>
             <button type="submit" class="mzp-c-button">{{ _('Send') }}</button>
           </p>
@@ -275,7 +281,12 @@
             {{ _('The intended recipient of the email or SMS must have consented.') }} <a href="{{ url('privacy.notices.websites') }}#campaigns">{{ _('Learn more') }}</a>
           </p>
           <p class="mzp-c-sendyourself-note mzp-is-email">
-            {{ _('The intended recipient of the email must have consented.') }} <a href="{{ url('privacy.notices.websites') }}#campaigns">{{ _('Learn more') }}</a>
+            {% if email_subtext %}
+              {{ email_subtext }}
+            {% else %}
+              {{ _('The intended recipient of the email must have consented.') }}
+            {% endif %}
+            <a href="{{ url('privacy.notices.websites') }}#campaigns">{{ _('Learn more') }}</a>
           </p>
         </div>
         <div class="mzp-c-sendyourself-thanks mzp-u-hidden">

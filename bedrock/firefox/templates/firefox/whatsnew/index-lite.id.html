@@ -4,6 +4,8 @@
 
 {% add_lang_files "firefox/whatsnew" %}
 
+{% from "macros.html" import send_yourself with context %}
+
 {% extends "firefox/base-protocol.html" %}
 
 {% block page_title %}Firefox Lite{% endblock %}
@@ -30,22 +32,19 @@
   <div class="lite-body">
     <div class="lite-content mzp-l-content">
       <div class="lite-woman">
-          <img src="{{ static('img/firefox/whatsnew/lite/woman.png') }}" width="513" alt="">
+        <img src="{{ static('img/firefox/whatsnew/lite/woman.png') }}" width="513" alt="">
       </div>
       <div class="lite-copy">
         <div class="lite-container">
-          <img src="{{ static('img/logos/firefox/logo-lite.png') }}" width="120" alt="">
+          <img src="{{ static('img/logos/firefox/logo-lite.png') }}" width="100" alt="">
           <h1><img src="{{ static('img/logos/firefox/logo-lite-wordmark-white.png') }}" width="300" alt="Firefox Lite"></h1>
-
-          {# Rough translation: A fast and lightweight Android browser designed for you! #}
-          <p class="lite-text">Sebuah peramban android yang cepat dan ringan yang di desain untuk kamu!</p>
+        </div>
+        <p class="lite-text">Peramban Android yang cepat dan ringan yang didesain untuk kamu!</p>
+        <div class="send-yourself-wrapper">
+          {{ send_yourself(include_title=False, product='download-firefox-rocket', id='send-firefox', message_set='fx-50-whatsnew', spinner_color='#000', email_title='Masukkan alamat surel dan kirimkan Firefox Lite ke ponselmu.', email_subtext='Penerima email harus menyetujui sebelumnya.') }}
         </div>
       </div>
-      <div class="lite-code qr-code">
-        <div class="lite-container">
-          <img src="{{ static('img/firefox/whatsnew/lite/qrcode.png') }}" width="250" alt="QR Code">
-        </div>
-      </div>
+    </div>
   </div>
 </main>
 {% endblock %}
