@@ -95,6 +95,7 @@
 
     .lite-copy {
         text-align: center;
+        z-index: 1;
     }
 
     @media #{$mq-lg} {
