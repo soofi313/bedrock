@@ -1,11 +1,11 @@
+import json
+
 from django.conf import settings
 from django.db import models, transaction
 
 from django_extensions.db.fields.json import JSONField
 from jinja2 import Markup
 from pathlib2 import Path
-
-from bedrock.externalfiles.utils import parse_md_file
 
 
 def get_data_from_file_path(file_path):
@@ -39,16 +39,18 @@ class ContentCardManager(models.Manager):
         card_objs = []
         cc_path = Path(settings.CONTENT_CARDS_PATH, 'content')
         with transaction.atomic(using=self.db):
-            self.get_queryset().delete()
-            cc_files = cc_path.glob('*/*.md')
+            self.all().delete()
+            cc_files = cc_path.glob('*/*.json')
             for ccf in cc_files:
                 path_data = get_data_from_file_path(ccf)
-                data, html = parse_md_file(str(ccf))
+                with ccf.open(encoding='utf-8') as ccfo:
+                    data = json.load(ccfo)
+
                 card_objs.append(ContentCard(
                     name=path_data['page_id'],
                     page_name=path_data['page_name'],
                     locale=path_data['locale'],
-                    content=html,
+                    content=data.pop('html_content', ''),
                     data=data,
                 ))
             self.bulk_create(card_objs)
@@ -83,6 +85,10 @@ class ContentCard(models.Model):
         if 'image' in data:
             data['image_url'] = '%scontentcards/img/%s' % (settings.STATIC_URL, data['image'])
             del data['image']
+
+        if 'highres_image' in data:
+            data['highres_image_url'] = '%scontentcards/img/%s' % (settings.STATIC_URL, data['highres_image'])
+            del data['highres_image']
 
         if 'ga_title' not in data:
             data['ga_title'] = data['title']
