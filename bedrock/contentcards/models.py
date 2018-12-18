@@ -9,12 +9,12 @@ from pathlib2 import Path
 
 
 def get_data_from_file_path(file_path):
-    name, locale = file_path.stem.split('.')
+    card_name, locale = file_path.stem.split('.')
     page_name = file_path.parts[-2]
-    page_id = '{}-{}-{}'.format(page_name, name, locale)
+    page_id = '{}-{}-{}'.format(page_name, locale, card_name)
     return {
-        'name': name,
         'locale': locale,
+        'card_name': card_name,
         'page_name': page_name,
         'page_id': page_id,
     }
@@ -22,18 +22,12 @@ def get_data_from_file_path(file_path):
 
 class ContentCardManager(models.Manager):
     def get_card(self, page_name, name, locale='en-US'):
-        card_id = '{}-{}-{}'.format(page_name, name, locale)
-        return self.get(name=card_id)
+        card_id = '{}-{}-{}'.format(page_name, locale, name)
+        return self.get(id=card_id)
 
-    def get_card_data(self, page_name, name, locale):
-        card = self.get_card(page_name, name, locale)
-        if locale == 'en-US':
-            return card.card_data
-        else:
-            en_card = self.get_card(page_name, name)
-            data = en_card.card_data
-            data.update(card.card_data)
-            return data
+    def get_page_cards(self, page_name, locale):
+        cards = self.filter(page_name=page_name, locale=locale)
+        return {c.card_name: c.card_data for c in cards}
 
     def refresh(self):
         card_objs = []
@@ -47,7 +41,8 @@ class ContentCardManager(models.Manager):
                     data = json.load(ccfo)
 
                 card_objs.append(ContentCard(
-                    name=path_data['page_id'],
+                    id=path_data['page_id'],
+                    card_name=path_data['card_name'],
                     page_name=path_data['page_name'],
                     locale=path_data['locale'],
                     content=data.pop('html_content', ''),
@@ -59,7 +54,8 @@ class ContentCardManager(models.Manager):
 
 
 class ContentCard(models.Model):
-    name = models.CharField(max_length=100, primary_key=True)
+    id = models.CharField(max_length=100, primary_key=True)
+    card_name = models.CharField(max_length=100)
     page_name = models.CharField(max_length=100)
     locale = models.CharField(max_length=10)
     content = models.TextField(blank=True)
@@ -68,10 +64,10 @@ class ContentCard(models.Model):
     objects = ContentCardManager()
 
     class Meta:
-        ordering = ('name',)
+        ordering = ('id',)
 
     def __unicode__(self):
-        return '{} ({})'.format(self.name, self.locale)
+        return '{} ({})'.format(self.card_name, self.locale)
 
     @property
     def html(self):

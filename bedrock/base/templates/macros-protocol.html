@@ -139,8 +139,8 @@
 {%- endmacro %}
 
 {# Content Card: A card built from data in the database #}
-{% macro content_card(page_name, name, locale, size=None) -%}
-  {% set card_data = get_content_card(page_name, name, locale, size) -%}
+{% macro content_card(content_cards, name, size=None) -%}
+  {% set card_data = get_content_card(content_cards, name, size) -%}
   {% if card_data -%}
     {{ card(**card_data) }}
   {% endif %}

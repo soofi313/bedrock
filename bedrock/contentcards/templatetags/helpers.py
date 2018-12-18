@@ -8,14 +8,18 @@ from bedrock.contentcards.models import ContentCard
 
 
 @library.global_function
-def get_content_card(page_name, name, locale, size=None):
-    try:
-        cc = ContentCard.objects.get_card(page_name, name, locale)
-    except ContentCard.DoesNotExist:
+def get_content_card(page_cards, name, size=None):
+    # page_cards is a dict of card_name to card_data
+    cc = page_cards.get(name)
+    if not cc:
         return None
 
-    ccd = cc.card_data
     if size:
-        ccd['class'] = 'mzp-c-card-' + size
+        cc['class'] = 'mzp-c-card-' + size
 
-    return ccd
+    return cc
+
+
+@library.global_function
+def get_page_content_cards(page_name, locale):
+    return ContentCard.objects.get_page_cards(page_name, locale)
