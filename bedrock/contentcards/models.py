@@ -101,6 +101,10 @@ class ContentCard(models.Model):
         if 'aspect_ratio' in data:
             data['aspect_ratio'] = 'mzp-has-aspect-%s' % data['aspect_ratio']
 
+        if 'size' in data:
+            data['class'] = 'mzp-c-card-%s' % data['size']
+            del data['size']
+
         if 'link_url' in data and not URL_RE.match(data['link_url']):
             data['link_url'] = reverse(data['link_url'])
 

@@ -8,16 +8,9 @@ from bedrock.contentcards.models import ContentCard
 
 
 @library.global_function
-def get_content_card(page_cards, name, size=None):
+def get_content_card(page_cards, name):
     # page_cards is a dict of card_name to card_data
-    cc = page_cards.get(name)
-    if not cc:
-        return None
-
-    if size:
-        cc['class'] = 'mzp-c-card-' + size
-
-    return cc
+    return page_cards.get(name)
 
 
 @library.global_function
