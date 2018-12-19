@@ -1,4 +1,5 @@
 import json
+import re
 
 from django.conf import settings
 from django.db import models, transaction
@@ -6,6 +7,11 @@ from django.db import models, transaction
 from django_extensions.db.fields.json import JSONField
 from jinja2 import Markup
 from pathlib2 import Path
+
+from bedrock.base.urlresolvers import reverse
+
+
+URL_RE = re.compile(r'^https?://', re.I)
 
 
 def get_data_from_file_path(file_path):
@@ -25,7 +31,7 @@ class ContentCardManager(models.Manager):
         card_id = '{}-{}-{}'.format(page_name, locale, name)
         return self.get(id=card_id)
 
-    def get_page_cards(self, page_name, locale):
+    def get_page_cards(self, page_name, locale='en-US'):
         cards = self.filter(page_name=page_name, locale=locale)
         return {c.card_name: c.card_data for c in cards}
 
@@ -94,5 +100,8 @@ class ContentCard(models.Model):
 
         if 'aspect_ratio' in data:
             data['aspect_ratio'] = 'mzp-has-aspect-%s' % data['aspect_ratio']
+
+        if 'link_url' in data and not URL_RE.match(data['link_url']):
+            data['link_url'] = reverse(data['link_url'])
 
         return data
