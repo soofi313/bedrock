@@ -8,8 +8,6 @@
 
 {% add_lang_files "mozorg/home/index-quantum" %}
 
-{% set page_content_cards = get_page_content_cards('home', LANG) %}
-
 {% block gtm_page_id %}data-gtm-page-id="Homepage"{% endblock %}
 
 {% block page_title %}{{ _('Internet for people, not profit') }}{% endblock %}
@@ -122,15 +120,15 @@
     <div class="mzp-l-content">
       <div class="mzp-l-card-hero">
         <!-- 1 -->
-        {{ content_card(page_content_cards, 'card_1', 'large') }}
+        {{ content_card('card_1', 'large') }}
         <!-- 2 -->
-        {{ content_card(page_content_cards, 'card_2') }}
+        {{ content_card('card_2') }}
         <!-- 3 -->
-        {{ content_card(page_content_cards, 'card_3') }}
+        {{ content_card('card_3') }}
         <!-- 4 -->
-        {{ content_card(page_content_cards, 'card_4') }}
+        {{ content_card('card_4') }}
         <!-- 5 -->
-        {{ content_card(page_content_cards, 'card_5') }}
+        {{ content_card('card_5') }}
       </div>
 
       {{ billboard(
@@ -145,9 +143,9 @@
 
       <div class="mzp-l-card-half">
         <!-- 6 -->
-        {{ content_card(page_content_cards, 'card_6', 'medium') }}
+        {{ content_card('card_6', 'medium') }}
         <!-- 7 -->
-        {{ content_card(page_content_cards, 'card_7', 'medium') }}
+        {{ content_card('card_7', 'medium') }}
       </div>
     </div>
 
@@ -176,9 +174,9 @@
     <div class="mzp-l-content">
       <div class="mzp-l-card-half">
         <!-- 8 -->
-        {{ content_card(page_content_cards, 'card_8', 'medium') }}
+        {{ content_card('card_8', 'medium') }}
         <!-- 9 -->
-        {{ content_card(page_content_cards, 'card_9', 'medium') }}
+        {{ content_card('card_9', 'medium') }}
       </div>
 
       {{ billboard(
@@ -194,17 +192,17 @@
 
       <div class="mzp-l-card-third">
         <!-- 10 -->
-        {{ content_card(page_content_cards, 'card_10') }}
+        {{ content_card('card_10') }}
         <!-- 11 -->
-        {{ content_card(page_content_cards, 'card_11') }}
+        {{ content_card('card_11') }}
         <!-- 12 -->
-        {{ content_card(page_content_cards, 'card_12') }}
+        {{ content_card('card_12') }}
         <!-- 13 -->
-        {{ content_card(page_content_cards, 'card_13') }}
+        {{ content_card('card_13') }}
         <!-- 14 -->
-        {{ content_card(page_content_cards, 'card_14') }}
+        {{ content_card('card_14') }}
         <!-- 15 -->
-        {{ content_card(page_content_cards, 'card_15') }}
+        {{ content_card('card_15') }}
       </div>
 
       {{ billboard(
@@ -219,9 +217,9 @@
 
       <div class="mzp-l-card-half">
         <!-- 16 -->
-        {{ content_card(page_content_cards, 'card_16', 'medium') }}
+        {{ content_card('card_16', 'medium') }}
         <!-- 17 -->
-        {{ content_card(page_content_cards, 'card_17', 'medium') }}
+        {{ content_card('card_17', 'medium') }}
       </div>
 
       <aside class="mzp-c-newsletter">
